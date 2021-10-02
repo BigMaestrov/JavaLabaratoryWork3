@@ -21,8 +21,17 @@ public class ChildrenLibrary {
         return childrenLibraryHalls[id];
     }
 
-    public Book getBookByID(int numInHall, int id) {
-        return childrenLibraryHalls[numInHall].getBookByID(id);
+    public Book getBookByID(int id) {
+        ChildrenBook[] booksInLibrary = new ChildrenBook[sumOfAllBooks()];
+        int numBookInLibrary = 0;
+        //Запись в новый массив
+        for (int i = 0; i < childrenLibraryHalls.length; i++) {
+            for (int j = 0; j < childrenLibraryHalls[i].getChildrenBooks().length; j++) {
+                booksInLibrary[numBookInLibrary] = childrenLibraryHalls[i].getBookByID(j);
+                numBookInLibrary++;
+            }
+        }
+        return booksInLibrary[id];
     }
 
     public void setChildrenLibraryHalls(ChildrenLibraryHall[] childrenLibraryHalls) {
@@ -40,16 +49,27 @@ public class ChildrenLibrary {
     public ChildrenLibrary(int numHalls, int[] numBooksInHalls) {
         setNumHalls(numHalls);
         setNumBooksInHalls(numBooksInHalls);
+        ChildrenLibraryHall[] childrenLibraryHall = new ChildrenLibraryHall[getNumHalls()];
+        for (int i = 0; i < getNumHalls(); i++) {
+            childrenLibraryHall[i] = new ChildrenLibraryHall("hall_" + i, numBooksInHalls[i]);
+        }
+        setChildrenLibraryHalls(childrenLibraryHall);
     }
 
     public ChildrenLibrary(ChildrenLibraryHall[] childrenLibraryHalls) {
+        setNumHalls(childrenLibraryHalls.length);
         setChildrenLibraryHalls(childrenLibraryHalls);
+        int[] numBookInHalls = new int[getNumHalls()];
+        for (int i = 0; i < getNumHalls(); i++) {
+            numBookInHalls[i] = childrenLibraryHalls[i].getChildrenBooks().length;
+        }
+        setNumBooksInHalls(numBookInHalls);
     }
 
     public int sumOfAllBooks() {
         int numBook = 0;
-        for (int i = 0; i < this.numBooksInHalls.length; i++) {
-            numBook = +this.numBooksInHalls[i];
+        for (int i = 0; i < getNumHalls(); i++) {
+            numBook += numBooksInHalls[i];
         }
         return numBook;
     }
@@ -57,11 +77,14 @@ public class ChildrenLibrary {
     public ChildrenBook[] selectionSortBookInHallByCost() {
         ChildrenBook[] booksInLibrary = new ChildrenBook[sumOfAllBooks()];
         int numBookInLibrary = 0;
+        System.out.println(childrenLibraryHalls.length);
+
         //Запись в новый массив
         for (int i = 0; i < childrenLibraryHalls.length; i++) {
-            for (int j = 0; j < numBooksInHalls[i]; j++) {
+            System.out.println(childrenLibraryHalls[i].getChildrenBooks().length);
+            for (int j = 0; j < childrenLibraryHalls[i].getChildrenBooks().length; j++, numBookInLibrary++) {
+                System.out.println("work");
                 booksInLibrary[numBookInLibrary] = childrenLibraryHalls[i].getBookByID(j);
-                numBookInLibrary++;
             }
         }
         //Сортировка
@@ -85,19 +108,24 @@ public class ChildrenLibrary {
 
     public void printNamesAndNumBooksOfHalls() {
         for (int i = 0; i < getNumHalls(); i++) {
-            System.out.println("Name:" + childrenLibraryHalls[i].getName() + ", NumOfBook:" + childrenLibraryHalls[i].getNumBook());
+            System.out.println("Name:" + childrenLibraryHalls[i].getName() + ", NumOfBook:" + childrenLibraryHalls[i].getChildrenBooks().length);
         }
     }
 
     public void changeHallByID(int numHall, ChildrenLibraryHall newHall) {
         childrenLibraryHalls[numHall] = newHall;
+        int[] numBooksInHalls = new int[getChildrenLibraryHalls().length];
+        for (int i = 0; i < getChildrenLibraryHalls().length; i++) {
+            numBooksInHalls[i] = childrenLibraryHalls[i].getChildrenBooks().length;
+        }
+        setNumBooksInHalls(numBooksInHalls);
     }
 
     public void changeBookByID(int num, ChildrenBook book) {
         int IDofBook = 0;
         //Запись в новый массив
         for (int i = 0; i < childrenLibraryHalls.length; i++) {
-            for (int j = 0; j < numBooksInHalls[i]; j++) {
+            for (int j = 0; j < childrenLibraryHalls[i].getChildrenBooks().length; j++) {
                 if (num == IDofBook) {
                     childrenLibraryHalls[i].redactBook(book, j);
                 }
@@ -125,44 +153,59 @@ public class ChildrenLibrary {
 
     }
 
-    public void deleteBookFromLibrary(int num) {
-        if (num > childrenLibraryHalls.length * numBooksInHalls.length) {
-            int IDofBook = 0;
-            //Запись в новый массив
-            for (int i = 0; i < childrenLibraryHalls.length; i++) {
-                for (int j = 0; j < numBooksInHalls.length; j++) {
-                    if (num == IDofBook) {
-                        childrenLibraryHalls[i].deleteBook(j);
-                    }
-                    IDofBook++;
-                }
+    public void deleteBookFromLibrary(int number) {
+        //Проверка на существование
+        if (number > sumOfAllBooks()) {
+            return;
+        }
+
+        //Запись книг в новый массив
+        ChildrenBook[] booksInLibrary = new ChildrenBook[sumOfAllBooks() - 1];
+        int numBookInLibrary = 0;
+        int indexOfHall = 0;
+        for (int i = 0; i < childrenLibraryHalls.length; i++) {
+            for (int j = 0; j < childrenLibraryHalls[i].getChildrenBooks().length; j++) {
+                if (numBookInLibrary != number) {
+                    booksInLibrary[numBookInLibrary] = childrenLibraryHalls[i].getBookByID(j);
+                    numBookInLibrary++;
+                }else indexOfHall=i;
             }
         }
+        int[] numBooksInHalls = getNumBooksInHalls();
+        numBooksInHalls[indexOfHall]--;
+        setNumBooksInHalls(numBooksInHalls);
+
+        //Распределение по залам
+        numBookInLibrary = 0;
+        ChildrenBook[] booksBufferForHall;
+        ChildrenLibraryHall[] libraryHalls = new ChildrenLibraryHall[childrenLibraryHalls.length];
+        for (int i = 0; i < childrenLibraryHalls.length; i++) {
+            libraryHalls[i] = new ChildrenLibraryHall("", numBooksInHalls[i]);
+            booksBufferForHall = new ChildrenBook[numBooksInHalls[i]];
+            for (int j = 0; j < numBooksInHalls[i]; j++) {
+                booksBufferForHall[j] = booksInLibrary[numBookInLibrary];
+            }
+            libraryHalls[i].setChildrenBooks(booksBufferForHall);
+        }
+        setNumBooksInHalls(numBooksInHalls);
+        setChildrenLibraryHalls(libraryHalls);
     }
 
     public ChildrenBook getBestBook() {
-        int Imax = 0;
-        int Jmax = 0;
-        int max = 0;
-        boolean isFounded = false;
+        ChildrenBook bestBook = new ChildrenBook();
         for (int i = 0; i < childrenLibraryHalls.length; i++) {
-            for (int j = 0; j < numBooksInHalls.length; j++) {
-                if (max < childrenLibraryHalls[i].getBookByID(j).getCost()) {
-                    max = childrenLibraryHalls[i].getBookByID(j).getCost();
-                    isFounded = true;
-                }
-            }
+            if (bestBook.getCost() < childrenLibraryHalls[i].getBestBook().getCost())
+                bestBook = childrenLibraryHalls[i].getBestBook();
         }
-        if (!isFounded) {
-            return childrenLibraryHalls[Imax].getBookByID(Jmax);
-        } else return null;
+        return bestBook;
     }
 
     public void printBooks(ChildrenBook[] booksInLibrary) {
         for (int i = 0; i < booksInLibrary.length; i++) {
-            System.out.println(booksInLibrary.toString());
+            System.out.println(booksInLibrary[i].toString());
         }
     }
+
 }
 
 

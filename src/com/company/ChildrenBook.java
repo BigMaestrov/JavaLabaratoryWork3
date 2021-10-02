@@ -31,7 +31,7 @@ public class ChildrenBook extends Book {
         setYear(year);
     }
 
-    public static String toString(ChildrenBook book){
-        return book.getAuthor() + " " + book.getName() + " " + book.getCost() + " " + book.getYear() + " "+ book.getMinimalAge();
+    public  String toString(){
+        return getAuthor() + " " + getName() + " " + getCost() + " " + getYear() + " "+ getMinimalAge();
     }
 }

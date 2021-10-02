@@ -25,13 +25,25 @@ public class Main {
         ChildrenLibrary library = new ChildrenLibrary(halls);
 
         //измените книгу;
-        //ChildrenBook newBook = new ChildrenBook("newAuthor", "newName", 15, 1954, 12);
-        //library.changeBookByID(1,newBook); Починить
+        System.out.println("1)Change book:"+"\n"+"book before changing:");
+        ChildrenBook newBook = new ChildrenBook("newAuthor", "newName", 15, 1954, 12);
+        System.out.println(library.getBookByID(1).toString());
+        library.changeBookByID(1, newBook);
+        System.out.println("book after changing:");
+        System.out.println(library.getBookByID(1).toString());
         //измените зал;
-        //ChildrenLibraryHall newHall = new ChildrenLibraryHall("newHall", books1);
-        //library.changeHallByID(1,newHall);
+        System.out.println("2)Change hall:"+"\n"+"hall before changing:");
+        System.out.println("name:"+library.childrenLibraryHalls[1].getName() +",  num of books:"+ library.childrenLibraryHalls[1].getChildrenBooks().length);
+        ChildrenLibraryHall newHall = new ChildrenLibraryHall("newHall", books1);
+        library.changeHallByID(1, newHall);
+        System.out.println("hall after changing:");
+        System.out.println("name:"+library.childrenLibraryHalls[1].getName() +",  num of books:"+ library.childrenLibraryHalls[1].getChildrenBooks().length);
         // удалите книгу;
-        //library.deleteBookFromLibrary(1);
+        System.out.println("3)delete book:"+"\n"+"book №1 before delete:");
+        System.out.println(library.getBookByID(1).toString());
+        library.deleteBookFromLibrary(1);
+        System.out.println("book №1 after delete (books remove):");
+        System.out.println(library.getBookByID(0).toString());
         //Выведите автора самой лучшей книги;
         System.out.println(library.getBestBook().getAuthor());
         // выведите список названий книг по убыванию цены.

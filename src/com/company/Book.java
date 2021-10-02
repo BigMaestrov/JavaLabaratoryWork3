@@ -59,7 +59,7 @@ public class Book {
         setYear(year);
     }
 
-    public static String toString(Book book) {
-        return book.getAuthor() + " " + book.getName() + " " + book.getCost() + " " + book.getYear();
+    public String toString() {
+        return getAuthor() + " " + getName() + " " + getCost() + " " + getYear();
     }
 }

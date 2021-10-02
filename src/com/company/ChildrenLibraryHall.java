@@ -1,17 +1,8 @@
 package com.company;
 
 public class ChildrenLibraryHall {
-    private int numBook;
     private ChildrenBook[] childrenBooks;
     private String name;
-
-    public int getNumBook() {
-        return numBook;
-    }
-
-    public void setNumBook(int numBook) {
-        this.numBook = numBook;
-    }
 
     public ChildrenBook[] getChildrenBooks() {
         return childrenBooks;
@@ -31,7 +22,7 @@ public class ChildrenLibraryHall {
 
     public ChildrenLibraryHall(String name, int numBook) {
         setName(name);
-        setNumBook(numBook);
+        childrenBooks = new ChildrenBook[numBook];
     }
 
     public ChildrenLibraryHall(String name, ChildrenBook[] childrenBooks) {
@@ -40,14 +31,14 @@ public class ChildrenLibraryHall {
     }
 
     public static void printBooks(ChildrenLibraryHall childrenLibraryHall) {
-        for (int i = 0; i < childrenLibraryHall.getNumBook(); i++) {
-            System.out.println(childrenLibraryHall.childrenBooks[i].getName()+" ");
+        for (int i = 0; i < childrenLibraryHall.childrenBooks.length; i++) {
+            System.out.println(childrenLibraryHall.childrenBooks[i].getName() + " ");
         }
     }
 
     public static int getCostOfAllBooks(ChildrenLibraryHall childrenLibraryHall) {
         int cost = 0;
-        for (int i = 0; i < childrenLibraryHall.getNumBook(); i++) {
+        for (int i = 0; i < childrenLibraryHall.childrenBooks.length; i++) {
             cost += childrenLibraryHall.childrenBooks[i].getCost();
         }
         return cost;
@@ -62,35 +53,41 @@ public class ChildrenLibraryHall {
     }
 
     public void addBook(ChildrenBook book, int number) {
-        if (number > this.getNumBook()) {
-            ChildrenBook[] childBooks = new ChildrenBook[number];
-            for (int i = 0; i < getNumBook(); i++) {
+        if (number > childrenBooks.length) {
+            ChildrenBook[] childBooks = new ChildrenBook[childrenBooks.length + 1];
+            for (int i = 0; i < childrenBooks.length; i++) {
                 childBooks[i] = childrenBooks[i];
             }
-            childBooks[number] = book;
+            childBooks[childrenBooks.length + 1] = book;
             setChildrenBooks(childBooks);
-            setNumBook(number);
         }
-        if (number <= this.getNumBook()) {
+        if (number <= childrenBooks.length) {
             redactBook(book, number);
         }
     }
 
     public void deleteBook(int number) {
-        if (number <= this.getNumBook()) {
-            this.childrenBooks[number] = null;
+        if (number <= childrenBooks.length) {
+            ChildrenBook[] childBooks = new ChildrenBook[childrenBooks.length - 1];
+            for (int i = 0, j = 0; i < childrenBooks.length; i++) {
+                if (j != number) {
+                    childBooks[j] = childrenBooks[i];
+                    j++;
+                }
+            }
+            setChildrenBooks(childBooks);
         }
     }
 
-    public static ChildrenBook getBestBook(ChildrenBook[] books) {
+    public ChildrenBook getBestBook() {
         int max = 0;
         int indexMax = 0;
-        for (int i = 0; i < books.length; i++) {
-            if(books[i].getCost()>max) {
-                max = books[i].getCost();
+        for (int i = 0; i < childrenBooks.length; i++) {
+            if (childrenBooks[i].getCost() >= max) {
+                max = childrenBooks[i].getCost();
                 indexMax = i;
             }
         }
-        return books[indexMax];
+        return childrenBooks[indexMax];
     }
 }
