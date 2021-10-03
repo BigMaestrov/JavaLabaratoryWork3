@@ -131,23 +131,29 @@ public class ChildrenLibrary {
         }
     }
 
-    public void addBookByID(int num, ChildrenBook book) {
-        if (num <= childrenLibraryHalls.length * numBooksInHalls.length) {
-            changeBookByID(num, book);
+    public void addBookByID(int number, ChildrenBook book) {
+        if (number < 0) {
+            return;
         }
-        if (num > childrenLibraryHalls.length * numBooksInHalls.length) {
-            int IDofBook = 0;
-            //Запись в новый массив
-            for (int i = 0; i < childrenLibraryHalls.length; i++) {
-                for (int j = 0; j < numBooksInHalls.length; j++) {
-                    if (num == IDofBook) {
-                        childrenLibraryHalls[i].addBook(book, j);
-                    }
-                    IDofBook++;
+        if (number > sumOfAllBooks()) {
+            return;
+        }
+        ChildrenLibraryHall[] halls = getChildrenLibraryHalls();
+        int[] numsBookInLibrary = getNumBooksInHalls();
+        int numBookInLibrary = 0;
+        for (int i = 0; i < childrenLibraryHalls.length; i++) {
+            for (int j = 0; j < childrenLibraryHalls[i].getChildrenBooks().length; j++) {
+                if (numBookInLibrary == number) {
+                    childrenLibraryHalls[i].addBook(book,j);
+                    numsBookInLibrary[i] = childrenLibraryHalls[i].getChildrenBooks().length;
+                    halls[i] = childrenLibraryHalls[i];
                 }
+                halls[i] = childrenLibraryHalls[i];
+                numBookInLibrary++;
             }
         }
-
+        setNumBooksInHalls(numsBookInLibrary);
+        setChildrenLibraryHalls(halls);
     }
 
     public void deleteBookFromLibrary(int number) {
