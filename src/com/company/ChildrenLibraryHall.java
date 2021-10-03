@@ -30,9 +30,9 @@ public class ChildrenLibraryHall {
         setChildrenBooks(childrenBooks);
     }
 
-    public static void printBooks(ChildrenLibraryHall childrenLibraryHall) {
-        for (int i = 0; i < childrenLibraryHall.childrenBooks.length; i++) {
-            System.out.println(childrenLibraryHall.childrenBooks[i].getName() + " ");
+    public void printBooks() {
+        for (int i = 0; i < childrenBooks.length; i++) {
+            System.out.print(childrenBooks[i].getName() + ", ");
         }
     }
 
@@ -53,27 +53,31 @@ public class ChildrenLibraryHall {
     }
 
     public void addBook(ChildrenBook book, int number) {
-        if (number > childrenBooks.length) {
-            ChildrenBook[] childBooks = new ChildrenBook[childrenBooks.length + 1];
-            for (int i = 0; i < childrenBooks.length; i++) {
+        ChildrenBook[] childBooks = new ChildrenBook[childrenBooks.length + 1];
+        if (number > 0) {
+            if (number > childrenBooks.length) {
+                number = childrenBooks.length;
+            }
+            for (int i = 0; i < number; i++) {
                 childBooks[i] = childrenBooks[i];
             }
-            childBooks[childrenBooks.length + 1] = book;
+            childBooks[number]=book;
+            for(int i = number; i < childrenBooks.length; i++){
+                childBooks[i+1]=childrenBooks[i];
+            }
             setChildrenBooks(childBooks);
         }
-        if (number <= childrenBooks.length) {
-            redactBook(book, number);
-        }
     }
+
 
     public void deleteBook(int number) {
         if (number <= childrenBooks.length) {
             ChildrenBook[] childBooks = new ChildrenBook[childrenBooks.length - 1];
-            for (int i = 0, j = 0; i < childrenBooks.length; i++) {
-                if (j != number) {
-                    childBooks[j] = childrenBooks[i];
-                    j++;
-                }
+            for (int i = 0; i < number; i++) {
+                childBooks[i] = childrenBooks[i];
+            }
+            for (int i = number; i < childrenBooks.length - 1; i++) {
+                childBooks[i] = childrenBooks[i + 1];
             }
             setChildrenBooks(childBooks);
         }
